@@ -15,7 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function clickOutcome(e) {
     const squareArray = Array.from(squares);
     const index = squareArray.indexOf(e.target);
+    console.log("Index " + index + " clicked.");
+    
+    let win =  checkForWin(currentPlayer, squareArray);
     playerDisplay.innerHTML = currentPlayer;
+
+    if(win) return;
+    
     messageLabel.innerHTML = "";
 
     if(squares[index].classList.contains('playerX') || squares[index].classList.contains('playerO'))
@@ -26,14 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if(currentPlayer === 'playerX') {
-      squares[index].classList.add('playerX')
-      currentPlayer = 'playerO'
-    } else {
-      squares[index].classList.add('playerO')
-      currentPlayer = 'playerX'
+    squares[index].classList.add(currentPlayer)
+    if(checkForWin(currentPlayer, squareArray)) {
+      return;
     }
-
+    
+    currentPlayer = _swapPlayer(currentPlayer);
     playerDisplay.innerHTML = currentPlayer;
   }
 
@@ -44,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearPlayerClass(square, 'playerO');
     });
 
+    currentPlayer = _swapPlayer(currentPlayer);
     playerDisplay.innerHTML = currentPlayer;
     messageLabel.innerHTML = "Game Reset";
     return;
@@ -55,5 +60,42 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       e.classList.remove(className);
     }
+  }
+
+  function checkForWin(className, squareArray)
+  {
+    let won = false;
+
+    // rows
+    won = _checkforThree(won, squareArray[0] ,squareArray[1], squareArray[2], className);
+    won = _checkforThree(won, squareArray[3] ,squareArray[4], squareArray[5], className);
+    won = _checkforThree(won, squareArray[6] ,squareArray[7], squareArray[8], className);
+    
+    // columns
+    won = _checkforThree(won, squareArray[0] ,squareArray[3], squareArray[6], className);
+    won = _checkforThree(won, squareArray[1] ,squareArray[4], squareArray[7], className);
+    won = _checkforThree(won, squareArray[2] ,squareArray[5], squareArray[8], className);
+
+    // diag
+    won = _checkforThree(won, squareArray[0] ,squareArray[4], squareArray[8], className);
+    won = _checkforThree(won, squareArray[2] ,squareArray[4], squareArray[6], className);
+
+    if(won) messageLabel.innerHTML = className + " won!";
+    
+    return won;
+  }
+
+  function _checkforThree(currentWin, e1, e2, e3, className)
+  {
+    if (currentWin)
+    {
+      return currentWin;
+    }
+    return (e1.classList.contains(className) && e2.classList.contains(className) && e3.classList.contains(className));
+  }
+
+  function _swapPlayer(currentPlayer)
+  {
+    return (currentPlayer === "playerX")? "playerO" : "playerX"; 
   }
 })

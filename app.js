@@ -40,18 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearBoard(e)
   {
     squares.forEach(square => {
-      if(square.classList.contains('playerX'))
-      {
-        square.classList.remove('playerX')
-      }
-      if(square.classList.contains('playerO'))
-      {
-        square.classList.remove('playerO')
-      }
+      clearPlayerClass(square, 'playerX');
+      clearPlayerClass(square, 'playerO');
     });
 
     playerDisplay.innerHTML = currentPlayer;
     messageLabel.innerHTML = "Game Reset";
     return;
+  }
+
+  function clearPlayerClass(e, className)
+  {
+    if(e.classList.contains(className))
+    {
+      e.classList.remove(className);
+    }
   }
 })
